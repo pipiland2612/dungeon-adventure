@@ -230,8 +230,8 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
     gp.eHandler.checkEvent()
 
   // ----------------------------------------------------------------------------------------------
-  // Inventory and Items
 
+  // Inventory and Items
   def setItems(): Unit =
     this.inventory.clear()
     this.inventory += currentWeapon
