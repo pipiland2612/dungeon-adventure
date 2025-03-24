@@ -146,7 +146,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
     state = State.IDLE
     needsAnimationUpdate = true
 
-  def jump(): Unit =
+  private def jump(): Unit =
     state = State.JUMP
     val newY = pos._1 + -3
     this.pos = (pos._1, newY)
@@ -160,7 +160,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
         gp.gui.isFinished = true
       hasCallDie = true
 
-  def resetCounter (): Unit =
+  private def resetCounter (): Unit =
     counter = 0
     shootCounter = 0
 
