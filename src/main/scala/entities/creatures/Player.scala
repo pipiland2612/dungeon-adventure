@@ -16,7 +16,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
   currentProjectile = OBJ_Fireball(gp)
   
   // IF YOU WANT TO BEAT THE GAME ASAP, TURN THIS INTO TRUE
-  var isGodMode = false
+  private var isGodMode = false
 
   state = State.IDLE
   // ----------------------------------------------------------------------------------
@@ -32,15 +32,15 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
   var exp = 0
   var level = 1
   var nextLevelExp = 5
-  var attackDamage = getAttackDamage
-  var defense = getDefense
+  var attackDamage: Int = getAttackDamage
+  var defense: Int = getDefense
   var coin = 25
 
   // other stats
   attackTimeAnimation = 30
   maxInvincDuration = 60
   var lightUpdated: Boolean = false
-  var hasCallDie = false
+  private var hasCallDie = false
 
   var drawing: Boolean = true
 
@@ -56,8 +56,8 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
   var solidAreaY = 37
   solidAreaDefaultX = solidAreaX
   solidAreaDefaultY = solidAreaY
-  var solidAreaWidth = (12 * 1.25).toInt
-  var solidAreaHeight = (12 * 1.25).toInt + 5
+  var solidAreaWidth: Int = (12 * 1.25).toInt
+  var solidAreaHeight: Int = (12 * 1.25).toInt + 5
   var solidArea = Rectangle(solidAreaX , solidAreaY , solidAreaWidth, solidAreaHeight)
 
   areaDefaultX = solidAreaDefaultX
@@ -68,22 +68,22 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
   // Screen and Rendering
   val screenX: Int = gp.screenWidth / 2 - (gp.tileSize / 2)
   val screenY: Int = gp.screenHeight / 2 - (gp.tileSize / 2)
-  val playerScale = (gp.tileSize * 1.25).toInt
+  val playerScale: Int = (gp.tileSize * 1.25).toInt
   private val frameSize = 64
-  val displayedImage = Tools.loadImage("players/player_image.png")
+  val displayedImage: BufferedImage = Tools.loadImage("players/player_image.png")
 
   // ----------------------------------------------------------------------------------------------
   // ANIMATIONS
   private val spriteFrames = Tools.loadFrames("players/Player_spritesheet", frameSize, frameSize, playerScale, playerScale, 21)
   private val attackFrames = Tools.loadFrames("players/attack_spritesheet", frameSize, frameSize, playerScale, playerScale, 4)
-  var idleAnimations = Map(
+  var idleAnimations: Map[Direction, Animation] = Map(
     Direction.UP -> Animation(Vector(spriteFrames(0)(0)), 1),
     Direction.LEFT -> Animation(Vector(spriteFrames(1)(0)), 1),
     Direction.DOWN -> Animation(Vector(spriteFrames(2)(0)), 1),
     Direction.RIGHT -> Animation(Vector(spriteFrames(3)(0)), 5),
   )
 
-  var runAnimations = Map(
+  var runAnimations: Map[Direction, Animation] = Map(
     Direction.UP -> Animation(
       Tools.getFrames(spriteFrames, 8, 8), 10),
     Direction.LEFT -> Animation(
@@ -94,7 +94,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
       Tools.getFrames(spriteFrames, 11, 8), 10),
   )
 
-  var attackAnimations = Map(
+  var attackAnimations: Map[Direction, Animation] = Map(
     Direction.UP -> Animation(
       Tools.getFrames(attackFrames, 3, 6), 5, 0, 5),
     Direction.LEFT -> Animation(
@@ -105,7 +105,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
       Tools.getFrames(attackFrames, 2, 6), 5, 0, 5),
   )
 
-  var deadAnimations = Map (
+  var deadAnimations: Map[Direction, Animation] = Map (
     Direction.UP -> Animation(
       Tools.getFrames(spriteFrames, 20, 6), 5),
     Direction.LEFT -> Animation(
@@ -121,11 +121,11 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
 
   // ----------------------------------------------------------------------------------------------
   // GETTER methods
-  def getState = this.state
-  def getHealth = this.health
-  override def getPosition = this.pos
-  def getSpeed = this.speed
-  def getCurrentAnimation = this.currentAnimation
+  def getState: State = this.state
+  def getHealth: Int = this.health
+  override def getPosition: (Int, Int) = this.pos
+  def getSpeed: Int = this.speed
+  def getCurrentAnimation: Animation = this.currentAnimation
   def getDefense: Int = currentShield.defense * dexterity
   def getCurrentWeapon: Weapon = currentWeapon
   def getCurrentWeaponIndex: Int = inventory.indexWhere(_ == this.currentWeapon)
@@ -137,7 +137,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
   def getAttackDamage: Int =
     attackArea = currentWeapon.attackArea
     currentWeapon.damage * strength
-  def canShoot: Boolean = !currentProjectile.alive && shootCounter == 60 && this.currentProjectile.haveEnoughMana(this)
+  private def canShoot: Boolean = !currentProjectile.alive && shootCounter == 60 && this.currentProjectile.haveEnoughMana(this)
 
   // ----------------------------------------------------------------------------------------------
   // STATE AND ACTIONS
@@ -176,7 +176,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
   // Input and Movement Handling
 
   private def handleInput(): Unit =
-    if (gp.keyH.attackPressed && attackCooldown == 0) then
+    if gp.keyH.attackPressed && attackCooldown == 0 then
       attack()
     else if Seq(gp.keyH.upPressed, gp.keyH.downPressed, gp.keyH.leftPressed, gp.keyH.rightPressed, gp.keyH.enterPressed).exists(identity) then
       handleMovementInput()
@@ -200,14 +200,14 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
       state = State.IDLE
       needsAnimationUpdate = true
 
-  def updateDirection(): Unit =
-    if (gp.keyH.upPressed) then
+  private def updateDirection(): Unit =
+    if gp.keyH.upPressed then
       this.direction = Direction.UP
-    else if (gp.keyH.downPressed) then
+    else if gp.keyH.downPressed then
       this.direction = Direction.DOWN
-    else if (gp.keyH.leftPressed) then
+    else if gp.keyH.leftPressed then
       this.direction = Direction.LEFT
-    else if (gp.keyH.rightPressed) then
+    else if gp.keyH.rightPressed then
       this.direction = Direction.RIGHT
 
   // ----------------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
   // ----------------------------------------------------------------------------------------------
 
   // Inventory and Items
-  def setItems(): Unit =
+  private def setItems(): Unit =
     this.inventory.clear()
     this.inventory += currentWeapon
     this.inventory += currentShield
@@ -274,7 +274,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
       if item.use(this) then
         inventory.remove(itemIndex)
 
-  def searchItemInInventory(itemName: String): Int = inventory.indexWhere(_.name.equals(itemName))
+  private def searchItemInInventory(itemName: String): Int = inventory.indexWhere(_.name.equals(itemName))
 
   def obtainItem(item: Item): Boolean =
     val newItem = gp.entityGen.getObject(item.name).asInstanceOf[Item]
@@ -306,8 +306,8 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
       case frame =>
         if drawing then
           g.drawImage(frame,
-            (this.screenX),
-            (this.screenY),
+            this.screenX,
+            this.screenY,
             null)
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f))
 
@@ -339,8 +339,8 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
     gp.projectileList += currentProjectile
     shootCounter = 0
 
-  def pickUpObject(index : Int): Unit =
-    if(index != -1) then
+  private def pickUpObject(index : Int): Unit =
+    if index != -1 then
       var text: String = ""
       val obj = gp.obj(gp.currentMap)(index)
       obj match
@@ -358,8 +358,8 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
         case _ =>
       gp.gui.addMessage(text)
 
-  def interactNPC(index : Int): Unit =
-    if(index != -1) then
+  private def interactNPC(index : Int): Unit =
+    if index != -1 then
       if gp.keyH.enterPressed then
         gp.gameState = GameState.DialogueState
         gp.npcList(gp.currentMap)(index).speak()
@@ -382,7 +382,7 @@ class Player(var pos: (Int, Int), gp: GamePanel) extends Creatures(gp):
           gp.gui.addMessage("Exp + " + exp)
           checkLevelUp()
 
-  def checkLevelUp(): Unit =
+  private def checkLevelUp(): Unit =
     if exp >= nextLevelExp then
       exp -= nextLevelExp
       level += 1
