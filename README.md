@@ -11,5 +11,10 @@ java -jar ./target/scala-3.3.4/DungeonAdventure-assembly-0.1.0-SNAPSHOT.jar
 1. Run the game: `sbt run`
 2. Build a single JAR that includes all dependencies: `sbt assembly`
 
-# Demo video 
-- https://drive.google.com/file/d/1kaxzRbnVaDSDRlnojBjxdb7L-R6tntl8/view?usp=sharing
+# Demo video
+<video width="800" controls>
+  <source src="game_demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+*Note: If the video doesn't play in your browser, you can [download it here](game_demo.mp4)*
